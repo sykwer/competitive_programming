@@ -29,6 +29,7 @@ using namespace std;
 
 /* ---------- Type ---------- */
 using ll = long long;
+#define int ll
 #define P pair<ll, ll>
 
 /* ---------- Constants  */
@@ -41,6 +42,6 @@ const ll MOD = 1e9 + 7;
 
 /* v-v-v-v-v-v-v-v-v Main Part v-v-v-v-v-v-v-v-v */
 
-int main() {
+signed main() {
     return 0;
 }
