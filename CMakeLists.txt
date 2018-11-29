@@ -6,4 +6,3 @@ set(CMAKE_CXX_STANDARD 14)
 add_subdirectory(math)
 
 add_executable(template template.cpp)
-target_link_libraries(template Math)
