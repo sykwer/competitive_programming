@@ -29,7 +29,6 @@ using namespace std;
 
 /* ---------- Type ---------- */
 using ll = long long;
-#define int ll
 #define P pair<ll, ll>
 
 /* ---------- Constants  */
