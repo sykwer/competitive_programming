@@ -5,5 +5,6 @@ set(CMAKE_CXX_STANDARD 14)
 
 add_subdirectory(math)
 add_subdirectory(graph)
+add_subdirectory(data_structure)
 
 add_executable(template template.cpp)
