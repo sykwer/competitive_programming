@@ -6,7 +6,7 @@ using namespace std;
 const int INF = 1 << 25;
 typedef pair<int, int> P; // min distance, vertex index
 
-class UndirectedGraph {
+class DirectedGraph {
     struct edge {
         int to;
         int cost;
@@ -16,11 +16,10 @@ public:
     int V;
     vector<vector<edge>> G;
 
-    UndirectedGraph(int v) : G(v), V(v) {}
+    DirectedGraph(int v) : G(v), V(v) {}
 
     void add_edge(int u, int v, int cost) {
         G[u].push_back({v, cost});
-        G[v].push_back({u, cost});
     }
 
     // O(E * logV)
@@ -49,10 +48,16 @@ public:
 };
 
 int main() {
-    UndirectedGraph ug = UndirectedGraph(3);
+    DirectedGraph ug = DirectedGraph(3);
+
     ug.add_edge(0, 1, 1);
+    ug.add_edge(1, 0, 1);
+
     ug.add_edge(0, 2, 4);
+    ug.add_edge(2, 0, 4);
+
     ug.add_edge(1, 2, 2);
+    ug.add_edge(2, 1, 2);
 
     vector<int> d = ug.dijkstra(0);
 
