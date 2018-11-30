@@ -47,7 +47,7 @@ struct edge {
 };
 
 bool comp_edge(const edge& e1, const edge& e2) {
-    return e1.cost - e2.cost;
+    return e1.cost < e2.cost;
 }
 
 int kruskal(int V, vector<edge>& es) {
