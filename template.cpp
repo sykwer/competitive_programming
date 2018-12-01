@@ -34,8 +34,7 @@ using ll = long long;
 
 /* ---------- Constants  */
 const ll MOD = 1e9 + 7;
-// const int INF = 1 << 25;
-// const ll INF = 1LL << 50;
+const int INF = 1LL << 62;
 // const double PI = acos(-1);
 // const double EPS = 1e-10;
 // mt19937 mert(LL(time(0)));
