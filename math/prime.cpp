@@ -2,6 +2,7 @@
 #include <map>
 #include <iostream>
 #include <iterator>
+#include <math.h>
 using namespace std;
 
 bool is_prime(int n) {
@@ -50,6 +51,29 @@ vector<int> sieve(int n) {
             primes.push_back(i);
             for (int j = 2 * i; j <= n; j += i) prime_table[j] = false;
         }
+    }
+
+    return move(primes);
+}
+
+// [a, b)
+vector<int> segment_sieve(int a, int b) {
+    vector<int> primes;
+
+    vector<bool> prime_table(b - a, true); // prime_table[i - a] = true <=> i is prime number
+    vector<bool> sub_prime_table((int) ceil(sqrt(b)), true);
+
+    for (int i = 2; i * i < b; i++) {
+        if (sub_prime_table[i]) {
+            for (int j = 2 * i; j * j < b; j += 1) sub_prime_table[j] = false;
+            for (int j = max(2, (a + i - 1) / i) * i; j < b; j += i) {
+                prime_table[j - a] = false;
+            }
+        }
+    }
+
+    for (int i = 0; i < b - a; i++) {
+        if (prime_table[i]) primes.push_back(i + a);
     }
 
     return move(primes);
