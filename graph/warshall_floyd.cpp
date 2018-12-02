@@ -11,8 +11,8 @@ public:
     vector<vector<int>> costs;
 
     DirectedGraph(int v) : V(v), costs(v, vector<int>(v, INF)) {
-        for (int i = 0LL; i < V; i++) {
-            costs[i][i] = 0LL;
+        for (int i = 0; i < V; i++) {
+            costs[i][i] = 0;
         }
     }
 
@@ -21,9 +21,9 @@ public:
     }
 
     void warshall_floyd() {
-        for (int k = 0LL; k < V; k++) {
-            for (int i = 0LL; i < V; i++) {
-                for (int j = 0LL; j < V; j++) {
+        for (int k = 0; k < V; k++) {
+            for (int i = 0; i < V; i++) {
+                for (int j = 0; j < V; j++) {
                     costs[i][j] = min(costs[i][j], costs[i][k] + costs[k][j]);
                 }
             }
