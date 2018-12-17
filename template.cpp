@@ -35,12 +35,8 @@ using ll = long long;
 /* ---------- Constants  */
 const ll MOD = 1e9 + 7;
 const int INF = 1LL << 55;
-// const double PI = acos(-1);
-// const double EPS = 1e-10;
-// mt19937 mert(LL(time(0)));
 
 /* v-v-v-v-v-v-v-v-v Main Part v-v-v-v-v-v-v-v-v */
-
 signed main() {
     return 0;
 }
