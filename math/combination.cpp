@@ -5,9 +5,9 @@ using namespace std;
 
 // O(N^2)
 vector<vector<int>> set_pascal(int N) {
-    vector<vector<int>> c(N, vector<int>(N, 0));
+    vector<vector<int>> c(N + 1, vector<int>(N + 1, 0));
 
-    for (int i = 0; i < N; i++) {
+    for (int i = 0; i <= N; i++) {
         c[i][0] = 1;
 
         for (int j = 1; j <= i; j++) {
@@ -19,9 +19,9 @@ vector<vector<int>> set_pascal(int N) {
 }
 
 vector<vector<int>> set_pascal(int N, int mod) {
-    vector<vector<int>> c(N, vector<int>(N, 0));
+    vector<vector<int>> c(N + 1, vector<int>(N + 1, 0));
 
-    for (int i = 0; i < N; i++) {
+    for (int i = 0; i <= N; i++) {
         c[i][0] = 1;
 
         for (int j = 1; j <= i; j++) {
