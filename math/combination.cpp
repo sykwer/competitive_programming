@@ -6,7 +6,7 @@ using namespace std;
 const long long MOD = 1e9 + 7;
 #define int long long
 
-// O(N^2)
+// pre: O(N^2), call: O(1) ----------------------------------------------------
 vector<vector<int>> set_pascal(int N) {
     vector<vector<int>> c(N + 1, vector<int>(N + 1, 0));
 
@@ -36,7 +36,7 @@ vector<vector<int>> set_pascal(int N, int mod) {
     return move(c);
 }
 
-// O(n)
+// pre: O(n), call: O(1) ----------------------------------------------------
 class Combination {
     int powmod(int a, int p) {
         int ans = 1;
@@ -74,6 +74,37 @@ public:
         return (((fact[a] * revFact[b]) % mod) * revFact[a-b]) % mod;
     }
 };
+
+// O(b + log(mod)) ----------------------------------------------------
+int powmod(int a, int p, int mod) {
+    int ans = 1;
+    int mul = a;
+
+    for (; p > 0; p >>= 1, mul = (mul * mul) % mod) {
+        if ((p & 1) == 1) ans = (ans * mul) % mod;
+    }
+
+    return ans;
+}
+
+int comb(int a, int b, int mod) {
+    int ans = 1;
+    if (b > a / 2) return comb(a, a - b, mod);
+    int div = 1;
+
+    for (int i = 0; i < b; i++) {
+        ans *= a - i;
+        ans %= mod;
+
+        div *= i + 1;
+        div %= mod;
+    }
+
+    // Fermat's little theorem
+    ans *= powmod(div, mod - 2, mod);
+
+    return ans % mod;
+}
 
 signed main() {
 }
