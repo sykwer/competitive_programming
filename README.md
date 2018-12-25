@@ -1,2 +1,2 @@
 # competitive_programming
-- [atcoder](https://atcoder.jp/user/sykwer)
+- [atcoder](https://atcoder.jp/users/sykwer)
