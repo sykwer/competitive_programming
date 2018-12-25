@@ -49,12 +49,13 @@ public:
     bool find_negative_loop() {
         vector<int> d(V, 0);
 
-        for (int i = 0; i < E; i++) {
-            edge e = edges[i];
-            if (d[e.to] > d[e.from] + e.cost) {
-                d[e.to] = d[e.from] + e.cost;
-
-                if (i == V - 1) return true;
+        for (int i = 0; i < V; i++) {
+            for (int j = 0; j < E; j++) {
+                edge e = edges[j];
+                if (d[e.to] > d[e.from] + e.cost) {
+                    d[e.to] = d[e.from] + e.cost;
+                    if (i == V - 1) return true;
+                }
             }
         }
 
