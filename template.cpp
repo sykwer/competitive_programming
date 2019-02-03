@@ -33,6 +33,7 @@ using ll = long long;
 #define P pair<ll, ll>
 
 /* ---------- Constants  */
+const double PI = 3.141592653589793238462643383279;
 const ll MOD = 1e9 + 7;
 const int INF = 1LL << 55;
 
