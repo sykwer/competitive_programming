@@ -1,3 +1,4 @@
 cmake_minimum_required(VERSION 3.10)
 
 add_executable(rmq rmq.cpp)
+add_executable(rsq rsq.cpp)
