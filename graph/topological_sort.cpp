@@ -20,6 +20,7 @@ public:
         table[from].push_back(to);
     }
 
+    // if the size of vector is less than V, this graph is cyclic
     vector<int> sort() {
         vector<int> sorted_nodes;
         stack<int> st;
