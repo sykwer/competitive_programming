@@ -11,6 +11,7 @@
 #include <cmath>
 #include <numeric>
 #include <random>
+#include <cstring>
 
 // container library
 #include <array>
@@ -23,6 +24,7 @@
 #include <string>
 #include <tuple>
 #include <vector>
+#include <stack>
 
 /* ---------- Namespace ---------- */
 using namespace std;
