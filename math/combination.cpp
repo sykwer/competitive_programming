@@ -71,6 +71,8 @@ public:
     }
 
     int get(int a, int b) {
+        if (a < 0 || b < 0) return 0;
+        if (b > a) return 0;
         return (((fact[a] * revFact[b]) % mod) * revFact[a-b]) % mod;
     }
 };
