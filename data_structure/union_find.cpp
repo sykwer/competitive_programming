@@ -6,12 +6,14 @@ using namespace std;
 class UnionFind {
 public:
     vector<int> par, rank;
+    vector<int> forest_size;
     int cnt;
 
     UnionFind(int n) : cnt(n) {
         par = vector<int>(n);
         iota(par.begin(), par.end(), 0);
         rank = vector<int>(n, 0);
+        forest_size.resize(n, 1);
     }
 
     int root(int x) {
@@ -26,10 +28,14 @@ public:
         x = root(x);
         y = root(y);
         if (x == y) return;
+
+        int fsz = forest_size[x] + forest_size[y];
         if (rank[x] < rank[y]) {
             par[x] = y;
+            forest_size[y] = fsz;
         } else {
             par[y] = x;
+            forest_size[x] = fsz;
             if (rank[x] == rank[y]) rank[x]++;
         }
         cnt--;
@@ -37,6 +43,10 @@ public:
 
     bool same(int x, int y) {
         return root(x) == root(y);
+    }
+
+    int get_forest_size(int x) {
+        return forest_size[root(x)];
     }
 };
 
