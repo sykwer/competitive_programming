@@ -8,8 +8,9 @@ public:
     vector<int> par, rank;
     vector<int> forest_size;
     int forest_cnt;
+    int N;
 
-    UnionFind(int n) : forest_cnt(n) {
+    UnionFind(int n) : forest_cnt(n), N(N) {
         par = vector<int>(n);
         iota(par.begin(), par.end(), 0);
         rank = vector<int>(n, 0);
@@ -55,7 +56,7 @@ signed main() {
     uf.unite(0, 1);
     uf.unite(1, 2);
 
-    cout << uf.cnt << endl; // 3
+    cout << uf.forest_cnt << endl; // 3
     cout << uf.same(0, 2) << endl; // true
 
     return 0;
