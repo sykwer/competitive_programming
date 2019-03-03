@@ -7,9 +7,9 @@ class UnionFind {
 public:
     vector<int> par, rank;
     vector<int> forest_size;
-    int cnt;
+    int forest_cnt;
 
-    UnionFind(int n) : cnt(n) {
+    UnionFind(int n) : forest_cnt(n) {
         par = vector<int>(n);
         iota(par.begin(), par.end(), 0);
         rank = vector<int>(n, 0);
@@ -38,7 +38,7 @@ public:
             forest_size[x] = fsz;
             if (rank[x] == rank[y]) rank[x]++;
         }
-        cnt--;
+        forest_cnt--;
     }
 
     bool same(int x, int y) {
