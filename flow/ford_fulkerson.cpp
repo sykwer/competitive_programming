@@ -6,7 +6,7 @@ using namespace std;
 const int INF = 1 << 30;
 
 // O(FE) where F = Amount of Maximum Flow
-struct FordFulKerson {
+struct FordFulkerson {
     struct edge {
         int to;
         int cap;
@@ -36,7 +36,7 @@ struct FordFulKerson {
     }
 
 public:
-    FordFulKerson(int v) {
+    FordFulkerson(int v) {
         V = v;
         table.resize(V);
         visited.resize(V);
@@ -66,7 +66,7 @@ signed main() {
     int V, E;
     cin >> V >> E;
 
-    FordFulKerson ff = FordFulKerson(V);
+    FordFulkerson ff = FordFulkerson(V);
     for (int i = 0; i < E; i++) {
         int s, t, cap;
         cin >> s >> t >> cap;
