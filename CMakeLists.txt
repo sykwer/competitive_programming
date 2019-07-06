@@ -9,5 +9,6 @@ add_subdirectory(data_structure)
 add_subdirectory(segtree)
 add_subdirectory(string)
 add_subdirectory(flow)
+add_subdirectory(array)
 
 add_executable(template template.cpp)
