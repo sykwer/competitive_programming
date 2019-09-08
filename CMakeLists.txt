@@ -11,5 +11,6 @@ add_subdirectory(string)
 add_subdirectory(flow)
 add_subdirectory(array)
 add_subdirectory(parse)
+add_subdirectory(type)
 
 add_executable(template template.cpp)

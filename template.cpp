@@ -1,6 +1,7 @@
 /* ---------- STL Libraries ---------- */
 // IO library
 #include <cstdio>
+
 #include <fstream>
 #include <iomanip>
 #include <ios>
@@ -8,6 +9,7 @@
 
 // algorithm library
 #include <algorithm>
+
 #include <cmath>
 #include <numeric>
 #include <random>
@@ -25,6 +27,9 @@
 #include <tuple>
 #include <vector>
 #include <stack>
+
+// type
+#include <cstdint>
 
 /* ---------- Namespace ---------- */
 using namespace std;
