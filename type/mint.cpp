@@ -58,7 +58,7 @@ public:
         return mint(*this) *= rhs;
     }
 
-    constexpr mint operator /=(const mint &rhs) const noexcept {
+    constexpr mint operator /(const mint &rhs) const noexcept {
         return mint(*this) /= rhs;
     }
 };
