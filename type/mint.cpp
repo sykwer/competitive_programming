@@ -34,12 +34,13 @@ public:
 
     constexpr mint& operator /=(const mint& rhs) noexcept {
         u64 power = Modulus - 2;
+        mint<MOD> mul = rhs;
         while (power) {
             if (power & 1u) {
-                *this *= rhs;
+                *this *= mul;
             }
 
-            rhs *= rhs;
+            mul *= mul;
             power >>= 1u;
         }
 
