@@ -9,7 +9,7 @@ template <uint_fast64_t Modulus> class mint {
     u64 a;
 public:
 
-    constexpr mint(const u64 a = 0) noexcept : a(a % Modulus) {}
+    constexpr mint(const u64 a = 0) noexcept : a((a % Modulus + Modulus) % Modulus) {}
 
     constexpr u64& value() noexcept {
         return a;
@@ -32,21 +32,6 @@ public:
         return *this;
     }
 
-    constexpr mint& operator /=(const mint& rhs) noexcept {
-        u64 power = Modulus - 2;
-        mint<MOD> mul = rhs;
-        while (power) {
-            if (power & 1u) {
-                *this *= mul;
-            }
-
-            mul *= mul;
-            power >>= 1u;
-        }
-
-        return *this;
-    }
-
     constexpr mint operator +(const mint rhs) const noexcept {
         return mint(*this) += rhs;
     }
@@ -57,6 +42,22 @@ public:
 
     constexpr mint operator *(const mint &rhs) const noexcept {
         return mint(*this) *= rhs;
+    }
+
+    constexpr mint pow(u64 t) const noexcept {
+        if (!t) return 1;
+        mint<Modulus> ret = pow(t >> 1u);
+        ret *= ret;
+        if (t & 1) ret *= *this;
+        return ret;
+    }
+
+    constexpr mint inv() const noexcept {
+        return pow(Modulus - 2);
+    }
+
+    constexpr mint operator /=(const mint rhs) {
+        return (*this) *= rhs.inv();
     }
 
     constexpr mint operator /(const mint &rhs) const noexcept {
