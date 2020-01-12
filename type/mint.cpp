@@ -4,14 +4,13 @@ using namespace std;
 const int MOD = 1e9 + 7;
 using ll = long long;
 
-template <uint_fast64_t Modulus> class mint {
-    using u64 = uint_fast64_t;
-    u64 a;
+template <long long Modulus> class mint {
+    long long a;
 public:
 
-    constexpr mint(const u64 a = 0) noexcept : a((a % Modulus + Modulus) % Modulus) {}
+    constexpr mint(const long long a = 0) noexcept : a((a % Modulus + Modulus) % Modulus) {}
 
-    constexpr u64& value() noexcept {
+    constexpr long long& value() noexcept {
         return a;
     }
 
@@ -44,7 +43,7 @@ public:
         return mint(*this) *= rhs;
     }
 
-    constexpr mint pow(u64 t) const noexcept {
+    constexpr mint pow(long long t) const noexcept {
         if (!t) return 1;
         mint<Modulus> ret = pow(t >> 1u);
         ret *= ret;
