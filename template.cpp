@@ -14,6 +14,7 @@
 #include <numeric>
 #include <random>
 #include <cstring>
+#include <cassert>
 
 // container library
 #include <array>
