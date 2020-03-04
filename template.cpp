@@ -47,5 +47,9 @@ const int INF = 1LL << 55;
 
 /* v-v-v-v-v-v-v-v-v Main Part v-v-v-v-v-v-v-v-v */
 signed main() {
+    cin.sync_with_stdio(false);
+    cin.tie(0);
+    cout.tie(0);
+
     return 0;
 }
