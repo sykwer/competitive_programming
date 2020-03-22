@@ -31,6 +31,7 @@
 
 // type
 #include <cstdint>
+#include <functional>
 
 /* ---------- Namespace ---------- */
 using namespace std;
