@@ -11,7 +11,7 @@ template <typename T, typename E> class SegTree {
     // 1. (T, F) is monoid (Identity element is ti)
     // 2. (E, H) is monoid (Identity element is ei)
     // 3. g(f(t1, t2), e1) = f(g(t1, e1), g(t2, e1))
-    //    or g(f(t1, t2), w(e1, len)) = f(g(a, w(e1, len/2), g(b, w(e1, len/2))
+    //    or g(f(t1, t2), w(e1, len)) = f(g(t1, w(e1, len/2)), g(t2, w(e1, len/2)))
     // 4. g(g(t1, e1), e2) = g(t1, h(e1, e2))
     // 5. g(t1, ei) = t1
     using F = function<T(T, T)>;
