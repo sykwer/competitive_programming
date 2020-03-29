@@ -4,6 +4,16 @@
 using namespace std;
 
 template <typename T, typename E> class SegTree {
+    // T: Element set
+    // E: Operator set
+
+    // Lazy SegTree can be used if..
+    // 1. (T, F) is monoid (Identity element is ti)
+    // 2. (E, H) is monoid (Identity element is ei)
+    // 3. g(f(t1, t2), e1) = f(g(t1, e1), g(t2, e1))
+    //    or g(f(t1, t2), w(e1, len)) = f(g(a, w(e1, len/2), g(b, w(e1, len/2))
+    // 4. g(g(t1, e1), e2) = g(t1, h(e1, e2))
+    // 5. g(t1, ei) = t1
     using F = function<T(T, T)>;
     using G = function<T(T, E)>;
     using H = function<E(E, E)>;
@@ -54,12 +64,12 @@ template <typename T, typename E> class SegTree {
         }
     }
 public:
-    // function<T(T, T)> f:
-    // function<T(T, E)> g:
-    // function<E(E, E)> h:
-    // function<E(E, int)> w:
-    // T ti:
-    // E ei:
+    // function<T(T, T)> f: Function to merge two elements
+    // function<T(T, E)> g: Function to apply operator to element
+    // function<E(E, E)> h: Function to merge two operators
+    // function<E(E, int)> w: w(e1, len) = h(e1, e1, ..., e1)
+    // T ti: Identity element of T
+    // E ei: Identity element of E
     SegTree(F f, G g, H h, W w, T ti, E ei) : f(f), g(g), h(h), w(w), ti(ti), ei(ei) {}
 
     void init(int n) {
