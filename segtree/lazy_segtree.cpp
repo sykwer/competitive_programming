@@ -82,8 +82,8 @@ public:
     void build(const vector<T> &v) {
         int n = v.size();
         init(n);
-        for (int i = 0; i < n; i++) data[i+n-1] = v[i];
-        for (int i = n-2; i >= 0; i--) {
+        for (int i = 0; i < n; i++) data[i+N-1] = v[i];
+        for (int i = N-2; i >= 0; i--) {
             data[i] = f(data[2*i+1], data[2*i+2]);
         }
     }
