@@ -76,7 +76,7 @@ private:
                     continue;
                 }
 
-                unsigned int bits_num = get_bs_bits(bs_global_idx - 1);
+                unsigned int bits_num = get_bs(bs_global_idx - 1);
                 for (int i = s * (bs_global_idx - 1); i < s * bs_global_idx; i++) if (bits[i]) bits_num++;
                 set_bs_bits(bs_global_idx, bits_num);
             }
@@ -86,7 +86,7 @@ private:
     void construct_Bl() {
         set_bl_bits(0, 0);
         for (int bl_idx = 1; bl_idx < Bl_elements_num; bl_idx++) {
-            unsigned int bits_num = get_bl_bits(bl_idx - 1) + get_bs_bits(bl_idx * Bs_internal_num - 1);
+            unsigned int bits_num = get_bl(bl_idx - 1) + get_bs(bl_idx * Bs_internal_num - 1);
             for (int i = (bl_idx * Bs_internal_num - 1) * s; i < bl_idx * Bs_internal_num * s; i++)
                 if (bits[i]) bits_num++;
             set_bl_bits(bl_idx, bits_num);
@@ -96,13 +96,13 @@ private:
     void construct_lookup() {
         for (unsigned int w = 0; w < pow(2, s); w++) {
             for (unsigned int j = 0; j < s; j++) {
-                set_lookup_bits(w, j, (j > 0 ? get_lookup_bits(w, j - 1) : 0) + ((w >> j) & 1));
+                set_lookup_bits(w, j, (j > 0 ? get_lookup(w, j - 1) : 0) + ((w >> j) & 1));
             }
         }
     }
 
     // Return Bl[i]
-    unsigned int get_bl_bits(unsigned int i) {
+    unsigned int get_bl(unsigned int i) {
         return project_range<Bl_n>(bl_bits, i * Bl_element_width, (i + 1) * Bl_element_width);
     }
 
@@ -112,7 +112,7 @@ private:
     }
 
     // Return Bs[i]
-    unsigned int get_bs_bits(unsigned int i) {
+    unsigned int get_bs(unsigned int i) {
         return project_range<Bs_n>(bs_bits, i * Bs_element_width, (i + 1) * Bs_element_width);
     }
 
@@ -125,7 +125,7 @@ private:
     // w = the number of bits in the current small block
     // j = local position in the current small block
     // return = the number of bits in small_block[0..j]
-    unsigned int get_lookup_bits(unsigned int w, unsigned int j) {
+    unsigned int get_lookup(unsigned int w, unsigned int j) {
         return project_range<lookup_n>(lookup_bits, (w * s + j) * lookup_element_width,
                                        (w * s + j + 1) * lookup_element_width);
     }
@@ -151,7 +151,7 @@ public:
         unsigned int y = x / Bs_internal_num; // index in Bl
         unsigned int w = project_range<n>(bits, x * s, (x + 1) * s); // bits num in the current small block
         unsigned int j = i % s; // local position in the current small block
-        return get_bl_bits(y) + get_bs_bits(x) + get_lookup_bits(w, j);
+        return get_bl(y) + get_bs(x) + get_lookup(w, j);
     }
 };
 
