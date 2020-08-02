@@ -163,7 +163,7 @@ int main() {
 
     std::bitset<n> bits;
     for (int i = 0; i < n; i++) {
-        if ((double) rand() / RAND_MAX > 0.5) bits[i] = 1;
+        if ((double) std::rand() / RAND_MAX > 0.5) bits[i] = 1;
         else bits[i] = 0;
     }
     BitVector bv(bits);
