@@ -186,12 +186,11 @@ private:
         set_element(lookup_table, lookup_element_width, w * s + j, value);
     }
 
-public:
     std::vector<unsigned long long> B;
     std::vector<unsigned long long> Bl;
     std::vector<unsigned long long> Bs;
     std::vector<unsigned long long> lookup_table;
-
+public:
     BitVector(std::bitset<n> bits) {
         unsigned int word = sizeof(unsigned long long) * 8;
         B.resize(n / word + (word - n % word), 0);
