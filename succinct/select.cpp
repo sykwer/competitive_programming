@@ -355,6 +355,12 @@ public:
     }
 };
 
+/*
+ * This select() implementation is still incomplete in that query is not executed in O(1).
+ * ・ Traversing tree children when finding which child node to go is executed in O(sqrt(logN))
+ * ・ Finding corresponding bit in the tree leaf is executed in O(logN)
+ */
+
 int main() {
     // Build bit vector
     std::bitset<n> bits;
