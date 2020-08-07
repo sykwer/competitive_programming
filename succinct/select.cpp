@@ -2,6 +2,7 @@
 #include <bitset>
 #include <cstdlib>
 #include <vector>
+#include <unordered_map>
 
 // Compute at compile time the minimum number of bits needed to store n
 constexpr unsigned int bits_needed(unsigned long long n) {
@@ -181,6 +182,10 @@ private:
         Type_n = Type_element_width * Type_elements_num;
     }
 
+    void build_lookup_table() {
+
+    }
+
     // Return B[i]
     unsigned int get_b(unsigned int i) {
         return get_element(B, 1, i);
@@ -246,6 +251,8 @@ public:
     std::vector<unsigned long long> Tree;
     std::vector<unsigned long long> Pos;
 
+    std::vector<std::vector<int>> lookup_table;
+
     unsigned int Ptr_element_width;
     unsigned int Ptr_elements_num;
     unsigned int Ptr_n;
@@ -261,6 +268,7 @@ public:
 
     BitVector(const std::bitset<n> &bits) {
         count_blocks_num(bits);
+        build_lookup_table();
         std::cout << "sparse-blocks-num=" << sparse_blocks_num << ", dense-blocks-num=" << dense_blocks_num << std::endl;
 
         unsigned int word = sizeof(unsigned long long) * 8;
@@ -394,24 +402,32 @@ public:
 };
 
 int main() {
+    // Build bit vector
     std::bitset<n> bits;
-    for (int i = 0; i < l * 2; i++) bits[i] = 1;
-    for (int i = 80000; i < 80000 + l; i++) bits[i] = 1;
-    for (int i = 190000; i <= 190002; i++) bits[i] = 1;
-
+    std::unordered_map<int, int> ans;
+    int key = 0;
     int one_num = 0;
-    for (int i = 0; i < bits.size(); i++) {
-        if (bits[i]) one_num++;
+
+    for (int i = 0; i < l * 2; i++) {
+        bits[i] = 1;
+        ans[key++] = i;
+        one_num++;
     }
 
-    /*
-    for (int i = 0; i < n; i++) {
-        if ((double) std::rand() / RAND_MAX > 0.9) bits[i] = 1;
-        else bits[i] = 0;
+    for (int i = 80000; i < 80000 + l; i++) {
+        bits[i] = 1;
+        ans[key++] = i;
+        one_num++;
     }
-     */
+
+    for (int i = 190000; i <= 190002; i++) {
+        bits[i] = 1;
+        ans[key++] = i;
+        one_num++;
+    }
 
     BitVector bv(bits);
+    // To here - Build bit vector
 
     std::cout << "l=" << l << ", s=" << s << ", n=" << n << ", lgn=" << logN << std::endl;
     std::cout << "block-size-threshold(dense/sparse)=" << threshold << std::endl;
@@ -422,12 +438,13 @@ int main() {
     std::cout << "Tree_element_width=" << Tree_element_width << ", Tree_elements_num=" << Tree_elements_num << ", Tree_n=" << Tree_n << ", Total-Tree_n=" << bv.dense_blocks_num * Tree_n << std::endl;
     std::cout << "Pos_element_width=" << Pos_element_width << ", Pos_elements_num=" << Pos_elements_num << ", Pos_n=" << Pos_n << std::endl;
 
-    std::cout << std::endl;
-
     for (int i = 0; i < one_num; i++) {
-        int ret = bv.select(i);
-        std::cout << i << "th bit is located at index " << ret << std::endl;
+        if (bv.select(i) != ans[i]) {
+            std::cout << "Test failed at " << i << "th test case. " << one_num - 1 - i << " tests remain" << std::endl;
+            return 0;
+        }
     }
+    std::cout << "Test passed" << std::endl;
 
     return 0;
 }
