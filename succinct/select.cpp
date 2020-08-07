@@ -216,23 +216,6 @@ private:
         return get_element(Tree, Tree_element_width, tree_idx * Tree_elements_num + node_idx);
     }
 
-    /*
-    unsigned int get_tree_nodes(unsigned int tree_idx, unsigned int node_idx, unsigned int batch_size) {
-        unsigned int start_node_idx = tree_idx * Tree_elements_num + node_idx;
-        unsigned int end_node_idx = start_node_idx + batch_size - 1;
-
-        if (start_node_idx % batch_size == 0) {
-            return get_element(Tree, Tree_element_width * batch_size, start_node_idx / batch_size);
-        } else {
-            unsigned long long lower = get_element(Tree, Tree_element_width * batch_size, start_node_idx / batch_size);
-            unsigned long long upper = get_element(Tree, Tree_element_width * batch_size, start_node_idx / batch_size + 1);
-            lower >>= (start_node_idx % batch_size) * Tree_element_width;
-
-        }
-        // return get_element(Tree, Tree_element_width, tree_idx * Tree_elements_num + node_idx);
-    }
-     */
-
     void set_tree_node(unsigned int tree_idx, unsigned int node_idx, unsigned int value) {
         set_element(Tree, Tree_element_width, tree_idx * Tree_elements_num + node_idx, value);
     }
@@ -332,35 +315,6 @@ public:
 
             global_bit_idx += block_size;
         }
-    }
-
-    void print_tree(int tree_idx) {
-        int idx = 0;
-
-        for (int d = 0; d <= tree_depth; d++) {
-            for (int i = 0; i < pow(tree_degree, d); i++) {
-                std::cout << get_tree_node(tree_idx, idx++) << " ";
-            }
-            std::cout << std::endl;
-        }
-    }
-
-    void print_pos(int pos_block_idx) {
-        std::cout << "Pos[" << pos_block_idx << "]: ";
-        for (int i = 0; i < l; i++) std::cout << get_pos(pos_block_idx, i) << " ";
-        std::cout << std::endl;
-    }
-
-    void print_types() {
-        std::cout << "types: ";
-        for (int i = 0; i < dense_blocks_num + sparse_blocks_num; i++) std::cout << get_type(i) << " ";
-        std::cout << std::endl;
-    }
-
-    void print_ptrs() {
-        std::cout << "ptrs: ";
-        for (int i = 0; i < dense_blocks_num + sparse_blocks_num; i++) std::cout << get_ptr(i) << " ";
-        std::cout << std::endl;
     }
 
     int select(unsigned int query_idx) {
