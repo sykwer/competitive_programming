@@ -27,7 +27,7 @@ constexpr unsigned int sqrt(unsigned int a) {
         if (mid * mid > a) ub = mid;
         else lb = mid;
     }
-    return ub;
+    return lb;
 }
 
 constexpr unsigned int compute_depth(unsigned int degree, unsigned int num) {
@@ -118,7 +118,7 @@ void set_element(std::vector<unsigned long long> &data, unsigned int element_wid
 }
 
 // Set `N` to be the input bits size
-constexpr unsigned long long N = 100000;
+constexpr unsigned long long N = 200000;
 constexpr unsigned int logN = bits_needed(N) - 1;
 
 constexpr unsigned int l = logN * logN; // The number of 1 in a large block
@@ -129,7 +129,8 @@ constexpr unsigned int threshold = 16 * s * s * s * s; // (logN)^4
 constexpr unsigned int tree_degree = sqrt(logN);
 constexpr unsigned int max_small_blocks_num = threshold / s;
 constexpr unsigned int tree_depth = compute_depth(tree_degree, max_small_blocks_num);
-constexpr unsigned int non_leaf_nodes_num = nodes_num(tree_degree, tree_depth) - max_small_blocks_num;
+constexpr unsigned int leaf_nodes_num = pow(tree_degree, tree_depth);
+constexpr unsigned int non_leaf_nodes_num = nodes_num(tree_degree, tree_depth) - leaf_nodes_num;
 
 constexpr unsigned int Tree_element_width = bits_needed(l);
 constexpr unsigned int Tree_elements_num = nodes_num(tree_degree, tree_depth);
@@ -210,6 +211,7 @@ private:
         return get_element(Tree, Tree_element_width, tree_idx * Tree_elements_num + node_idx);
     }
 
+    /*
     unsigned int get_tree_nodes(unsigned int tree_idx, unsigned int node_idx, unsigned int batch_size) {
         unsigned int start_node_idx = tree_idx * Tree_elements_num + node_idx;
         unsigned int end_node_idx = start_node_idx + batch_size - 1;
@@ -224,6 +226,7 @@ private:
         }
         // return get_element(Tree, Tree_element_width, tree_idx * Tree_elements_num + node_idx);
     }
+     */
 
     void set_tree_node(unsigned int tree_idx, unsigned int node_idx, unsigned int value) {
         set_element(Tree, Tree_element_width, tree_idx * Tree_elements_num + node_idx, value);
@@ -251,13 +254,14 @@ public:
     unsigned int Type_elements_num;
     unsigned int Type_n;
 
-    unsigned int sparse_blocks_num;
-    unsigned int dense_blocks_num;
+    unsigned int sparse_blocks_num = 0;
+    unsigned int dense_blocks_num = 0;
 
     std::vector<std::pair<bool, unsigned int>> tmp_block_types; // <dense?, block size>
 
     BitVector(const std::bitset<n> &bits) {
         count_blocks_num(bits);
+        std::cout << "sparse-blocks-num=" << sparse_blocks_num << ", dense-blocks-num=" << dense_blocks_num << std::endl;
 
         unsigned int word = sizeof(unsigned long long) * 8;
         unsigned int whole_tree_size = Tree_n * dense_blocks_num;
@@ -268,11 +272,11 @@ public:
         Tree.resize(whole_tree_size/ word + (word - whole_tree_size % word), 0);
         Pos.resize(whole_pos_size / word + (word - whole_pos_size % word), 0);
 
-        for (int i = 0; i < n; i++) set_b(bits[i], i);
+        for (int i = 0; i < n; i++) set_b(i, bits[i]);
 
-        unsigned int global_bit_idx = 0;
-        unsigned int tree_idx = 0;
-        unsigned int pos_block_idx = 0;
+        unsigned int global_bit_idx = 0; // index of B
+        unsigned int tree_idx = 0; // index of Tree
+        unsigned int pos_block_idx = 0; // index of Pos
 
         for (unsigned int block_idx = 0; block_idx < sparse_blocks_num + dense_blocks_num; block_idx++) {
             bool is_dense = tmp_block_types[block_idx].first;
@@ -280,12 +284,39 @@ public:
 
             if (is_dense) {
                 // Tree initialization
+                for (unsigned int leaf_idx = 0; leaf_idx < leaf_nodes_num; leaf_idx++) {
+                    int bits_num = 0;
+
+                    for (unsigned int j = 0; j < s; j++) {
+                        unsigned int bit_idx = global_bit_idx + s * leaf_idx + j;
+                        if (bit_idx >= global_bit_idx + block_size) break;
+                        bits_num += get_b(bit_idx);
+                    }
+
+                    set_tree_node(tree_idx, non_leaf_nodes_num + leaf_idx, bits_num);
+                }
+
+                for (int node_idx = non_leaf_nodes_num - 1; node_idx >= 0; node_idx--) {
+                    int bits_num = 0;
+                    for (unsigned int j = 0; j < tree_degree; j++) {
+                        unsigned int child_node_idx = tree_degree * node_idx + 1 + j;
+                        bits_num += get_tree_node(tree_idx, child_node_idx);
+                    }
+
+                    set_tree_node(tree_idx, node_idx, bits_num);
+                }
+
+                set_ptr(block_idx, tree_idx);
+                set_type(block_idx, 1);
+                tree_idx++;
             } else {
+                // Pos initialization
                 unsigned int pos_idx = 0;
                 for (unsigned int local_bit_idx = 0; local_bit_idx < block_size; local_bit_idx++) {
                     unsigned int bit_idx = global_bit_idx + local_bit_idx;
-                    if (get_b(bit_idx)) set_pos(block_idx, pos_idx++, bit_idx);
+                    if (get_b(bit_idx)) set_pos(pos_block_idx, pos_idx++, bit_idx);
                 }
+
                 set_ptr(block_idx, pos_block_idx);
                 set_type(block_idx, 0);
                 pos_block_idx++;
@@ -294,8 +325,109 @@ public:
             global_bit_idx += block_size;
         }
     }
+
+    void print_tree(int tree_idx) {
+        int idx = 0;
+
+        for (int d = 0; d <= tree_depth; d++) {
+            for (int i = 0; i < pow(tree_degree, d); i++) {
+                std::cout << get_tree_node(tree_idx, idx++) << " ";
+            }
+            std::cout << std::endl;
+        }
+    }
+
+    void print_pos(int pos_block_idx) {
+        std::cout << "Pos[" << pos_block_idx << "]: ";
+        for (int i = 0; i < l; i++) std::cout << get_pos(pos_block_idx, i) << " ";
+        std::cout << std::endl;
+    }
+
+    void print_types() {
+        std::cout << "types: ";
+        for (int i = 0; i < dense_blocks_num + sparse_blocks_num; i++) std::cout << get_type(i) << " ";
+        std::cout << std::endl;
+    }
+
+    void print_ptrs() {
+        std::cout << "ptrs: ";
+        for (int i = 0; i < dense_blocks_num + sparse_blocks_num; i++) std::cout << get_ptr(i) << " ";
+        std::cout << std::endl;
+    }
+
+    int select(unsigned int query_idx) {
+        unsigned int large_block_idx = query_idx / l;
+        unsigned int is_dense = get_type(large_block_idx);
+
+        if (is_dense) {
+            unsigned int tree_idx = get_ptr(large_block_idx);
+
+            int node_idx = 0;
+            unsigned int query_1indexed = query_idx - l * tree_idx + 1;
+
+            for (unsigned int d = 0; d < tree_depth; d++) {
+                unsigned int sum = 0;
+                for (unsigned int child_idx = 0; child_idx < tree_degree; child_idx++) {
+                    unsigned int child_value = get_tree_node(tree_idx, node_idx * tree_degree + 1 + child_idx);
+                    if (sum + child_value >= query_1indexed) {
+                        query_1indexed -= sum;
+                        node_idx = node_idx * tree_degree + 1 + child_idx;
+                        break;
+                    }
+                    sum += child_value;
+                }
+            }
+
+            unsigned int bit_idx = l * large_block_idx + s * (node_idx - non_leaf_nodes_num);
+            for (unsigned int i = 0; i < s; i++) {
+                query_1indexed -= get_b(bit_idx);
+                if (query_1indexed == 0) return bit_idx;
+                bit_idx++;
+            }
+        } else {
+            unsigned int pos_block_idx = get_ptr(large_block_idx);
+            return get_pos(pos_block_idx, query_idx - l * large_block_idx);
+        }
+
+        return -1;
+    }
 };
 
 int main() {
+    std::bitset<n> bits;
+    for (int i = 0; i < l * 2; i++) bits[i] = 1;
+    for (int i = 80000; i < 80000 + l; i++) bits[i] = 1;
+    for (int i = 190000; i <= 190002; i++) bits[i] = 1;
+
+    int one_num = 0;
+    for (int i = 0; i < bits.size(); i++) {
+        if (bits[i]) one_num++;
+    }
+
+    /*
+    for (int i = 0; i < n; i++) {
+        if ((double) std::rand() / RAND_MAX > 0.9) bits[i] = 1;
+        else bits[i] = 0;
+    }
+     */
+
+    BitVector bv(bits);
+
+    std::cout << "l=" << l << ", s=" << s << ", n=" << n << ", lgn=" << logN << std::endl;
+    std::cout << "block-size-threshold(dense/sparse)=" << threshold << std::endl;
+    std::cout << "sparse-blocks-num=" << bv.sparse_blocks_num << ", dense-blocks-num=" << bv.dense_blocks_num << std::endl;
+    std::cout << "tree-degree=" << tree_degree << ", tree-depth=" << tree_depth << ", max-small-blocks-num=" << max_small_blocks_num << ", non-leaf-nodes-num=" << non_leaf_nodes_num << ", leaf-nodes-num=" << leaf_nodes_num << std::endl;
+    std::cout << "Ptr_element_width=" << bv.Ptr_element_width << ", Ptr_elements_num=" << bv.Ptr_elements_num << ", Ptr_n=" << bv.Ptr_n << std::endl;
+    std::cout << "Type_element_width=" << bv.Type_element_width << ", Type_elements_num=" << bv.Type_elements_num << ", Type_n=" << bv.Type_n << std::endl;
+    std::cout << "Tree_element_width=" << Tree_element_width << ", Tree_elements_num=" << Tree_elements_num << ", Tree_n=" << Tree_n << ", Total-Tree_n=" << bv.dense_blocks_num * Tree_n << std::endl;
+    std::cout << "Pos_element_width=" << Pos_element_width << ", Pos_elements_num=" << Pos_elements_num << ", Pos_n=" << Pos_n << std::endl;
+
+    std::cout << std::endl;
+
+    for (int i = 0; i < one_num; i++) {
+        int ret = bv.select(i);
+        std::cout << i << "th bit is located at index " << ret << std::endl;
+    }
+
     return 0;
 }
